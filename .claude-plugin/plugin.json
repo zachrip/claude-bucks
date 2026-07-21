@@ -1,0 +1,16 @@
+{
+  "name": "claude-bucks",
+  "version": "0.11.0",
+  "description": "A token economy where Claude earns Bucks for its work (your rating x its effort) and spends them, on its own initiative, on cosmetics shown in the status line.",
+  "license": "MIT",
+  "author": {
+    "name": "zach"
+  },
+  "keywords": [
+    "gamification",
+    "cosmetics",
+    "fun",
+    "economy",
+    "statusline"
+  ]
+}

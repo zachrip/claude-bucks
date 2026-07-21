@@ -1,0 +1,40 @@
+#!/bin/sh
+# Claude Bucks — launcher.
+#
+# The logic lives in claude-bucks.ts (TypeScript). There is NO build step: modern Node
+# strips types natively (>= 22.18 by default, 22.6–22.17 with a flag) and Bun runs
+# TS directly. This shim just finds a runtime and hands off — and if none is
+# available it exits 0 with a friendly message so it can never break a hook.
+# Resolve this script's real location, following symlinks (portable; no readlink -f).
+src="$0"
+while [ -h "$src" ]; do
+  d=$(CDPATH= cd -P "$(dirname "$src")" && pwd)
+  src=$(readlink "$src")
+  case "$src" in /*) ;; *) src="$d/$src" ;; esac
+done
+dir=$(CDPATH= cd -P "$(dirname "$src")" && pwd)
+TS="$dir/claude-bucks.ts"
+
+# Bun runs TypeScript on any version — prefer it if present.
+if command -v bun >/dev/null 2>&1; then
+  exec bun "$TS" "$@"
+fi
+
+if command -v node >/dev/null 2>&1; then
+  ver=$(node -p 'process.versions.node' 2>/dev/null)
+  major=${ver%%.*}
+  rest=${ver#*.}
+  minor=${rest%%.*}
+  case "$major" in ''|*[!0-9]*) major=0 ;; esac
+  case "$minor" in ''|*[!0-9]*) minor=0 ;; esac
+  if [ "$major" -gt 22 ] || { [ "$major" -eq 22 ] && [ "$minor" -ge 18 ]; }; then
+    exec node --no-warnings "$TS" "$@"          # native type-stripping, on by default
+  elif [ "$major" -eq 22 ] && [ "$minor" -ge 6 ]; then
+    exec node --no-warnings --experimental-strip-types "$TS" "$@"
+  fi
+  echo "Claude Bucks needs Node >= 22.6 (or Bun) to run TypeScript; found Node $ver." >&2
+  exit 0
+fi
+
+echo "Claude Bucks needs Node (>= 22.6) or Bun on your PATH to run. Install one to use the plugin." >&2
+exit 0

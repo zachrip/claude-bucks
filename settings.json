@@ -1,0 +1,7 @@
+{
+  "subagentStatusLine": {
+    "type": "command",
+    "command": "${CLAUDE_PLUGIN_ROOT}/bin/claude-bucks statusline",
+    "refreshInterval": 5
+  }
+}

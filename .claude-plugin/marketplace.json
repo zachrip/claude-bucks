@@ -1,0 +1,15 @@
+{
+  "name": "claude-bucks",
+  "description": "Local marketplace for the Claude Bucks plugin.",
+  "owner": {
+    "name": "zach",
+    "email": "zach@zachrip.net"
+  },
+  "plugins": [
+    {
+      "name": "claude-bucks",
+      "source": ".",
+      "description": "A token economy where Claude earns Bucks for its work and spends them, on its own initiative, on cosmetics it chooses itself."
+    }
+  ]
+}
